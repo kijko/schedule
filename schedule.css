@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.black-border {
+    border: 1px solid black;
+}
+
+.schedule {
+    font-family: source sans pro, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.note-card-static, .note-card-vertically {
+    color: white;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.2);
+}
+
+.note-time {
+    opacity: 0.7;
+}
+
+@media (min-width: 1280px) {
+    .time-column {
+        float: left;
+        display: inline-block;
+        width: 5%;
+
+        font-weight: 400;
+    }
+
+    .days {
+        float: left;
+        display: inline-block;
+        width: 95%;
+    }
+
+    /* 30px - height of 30min schedule cell */
+    .empty-time-row {
+        height: 40px;
+        box-sizing: border-box;
+    }
+
+    .time-row {
+        /*double of height*/
+        height: 60px;
+        text-align: center;
+        border-top: 1px solid #ebebeb;
+
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 1279px) {
+    .time-column {
+        display: none;
+        float: unset;
+    }
+
+    .days {
+        display: block;
+        width: initial;
+        float: unset;
+    }
+}
+
+@media (min-width: 1024px) {
+    .day {
+        width: calc(100% / 7);
+        display: inline-block;
+        float: left;
+    }
+
+    .day-header {
+        height: 40px;
+        position: relative;
+
+        font-weight: 400;
+
+        border: 1px solid #ebebeb;
+        box-sizing: border-box;
+
+    }
+
+    .day-header span {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .day-notes-half-hour {
+        height: 30px;
+        border: 1px solid #ebebeb;
+        box-sizing: border-box;
+    }
+
+    .day-notes {
+        position: relative;
+    }
+
+    .note-card-static {
+        display: none;
+    }
+
+    .note-card-vertically {
+        position: absolute;
+        width: 100%;
+    }
+
+    .note-time {
+        height: 25px;
+
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    .note-title {
+        padding: 5px;
+        box-sizing: border-box;
+
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 1023px) {
+    .day-header {
+        padding-top: 30px;
+        padding-left: 30px;
+    }
+
+    .day-notes {
+        white-space: nowrap;
+        overflow-x: scroll;
+        height: 200px;
+        padding: 20px;
+    }
+
+    .note-card-vertically {
+        display: none;
+    }
+
+    .note-card-static {
+        display: inline-block;
+        width: 350px;
+        height: 95%;
+        margin-left: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .note-card-static-popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .note-card-static-popup-header {
+        height: 80px;
+    }
+
+    .note-card-static-popup-body {
+        color: black;
+        background-color: white;
+        height: 100%;
+    }
+
+    .note-time {
+        padding: 10px;
+    }
+
+    .note-title {
+        white-space: normal;
+        padding: 10px;
+        font-size: 1.44em;
+    }
+
+    .day-notes-half-hour {
+        display: none;
+    }
+}
+
+
+
+
