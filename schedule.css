@@ -144,28 +144,48 @@
     }
 
     .note-card-static {
+        position: relative;
         display: inline-block;
         width: 350px;
         height: 95%;
         margin-left: 10px;
         margin-right: 10px;
         cursor: pointer;
-    }
+   }
 
-    .note-card-static-popup {
-        display: none;
-        position: fixed;
+    .note-card-static-clickspot {
+        z-index: 2;
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
     }
 
-    .note-card-static-popup-header {
+    .note-card-static-opened {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .note-card-static-opened-header {
+        position: relative;
         height: 80px;
     }
 
-    .note-card-static-popup-body {
+    .note-card-static-opened-header-exit {
+        position: absolute;
+        display: inline;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 100px;
+        background-color: black;
+    }
+
+    .note-card-static-opened-body {
         color: black;
         background-color: white;
         height: 100%;
