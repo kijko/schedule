@@ -13,7 +13,7 @@
     font-weight: 700;
 }
 
-.note-card-static, .note-card-vertically {
+.note-card-mobile, .note-card-normal {
     color: white;
     border-bottom: 5px solid rgba(0, 0, 0, 0.2);
 }
@@ -102,11 +102,11 @@
         position: relative;
     }
 
-    .note-card-static {
+    .note-card-mobile {
         display: none;
     }
 
-    .note-card-vertically {
+    .note-card-normal {
         position: absolute;
         width: 100%;
     }
@@ -139,11 +139,11 @@
         padding: 20px;
     }
 
-    .note-card-vertically {
+    .note-card-normal {
         display: none;
     }
 
-    .note-card-static {
+    .note-card-mobile {
         position: relative;
         display: inline-block;
         width: 350px;
@@ -153,7 +153,7 @@
         cursor: pointer;
    }
 
-    .note-card-static-clickspot {
+    .note-card-mobile-clickspot {
         z-index: 2;
         position: absolute;
         top: 0;
@@ -162,7 +162,7 @@
         height: 100%;
     }
 
-    .note-card-static-opened {
+    .note-card-mobile-opened {
         position: fixed;
         top: 0;
         left: 0;
@@ -170,25 +170,46 @@
         bottom: 0;
     }
 
-    .note-card-static-opened-header {
+    .note-card-mobile-opened-header {
         position: relative;
         height: 80px;
+        color: white;
+        font-size: 1.5em;
     }
 
-    .note-card-static-opened-header-exit {
+    .note-card-mobile-opened-header-exit {
         position: absolute;
         display: inline;
         top: 0;
         bottom: 0;
         right: 0;
-        width: 100px;
-        background-color: black;
+        width: 80px;
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
-    .note-card-static-opened-body {
+    .note-card-mobile-opened-header-exit::before {
+        content: '✖';
+        position: absolute;
+        right: 40px;
+        top: 40px;
+        transform: translate(50%, -50%);
+    }
+
+    .note-card-mobile-opened-header-title {
+        position: absolute;
+        display: inline;
+        left: 40px;
+        top: 40px;
+        transform: translate(0%, -50%);
+    }
+
+    .note-card-mobile-opened-body {
         color: black;
         background-color: white;
         height: 100%;
+        padding: 30px;
+        font-weight: initial;
+        font-size: 24px;
     }
 
     .note-time {

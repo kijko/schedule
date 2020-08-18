@@ -1,114 +1,95 @@
 /* global console */
 
 class Note {
-    constructor(title, date, durationInMinutes, color = "#588093") {
+    constructor(
+        date,
+        durationInMinutes,
+        title,
+        description = "",
+        color = "#588093",
+    ) {
         this.date = date;
         this.durationInMinutes = durationInMinutes;
 
         this._title = title;
+        this._description = description;
         this._color = color;
 
-        this._initVerticallyNote();
-        this._initStaticNote();
+        this._initNormalNote();
+        this._initMobileNote();
+        this._initColor();
     }
 
-
-    _initVerticallyNote() {
-        this._verticallyNote = document.createElement("DIV");
-        this._verticallyNote.classList.add("note-card-vertically");
-
-        const verticallyNoteTime = document.createElement("DIV");
-        verticallyNoteTime.classList.add("note-time");
-        verticallyNoteTime.innerText = this._prepareTimePeriod();
-        this._verticallyNote.appendChild(verticallyNoteTime);
-
-        const verticallyNoteTitle = document.createElement("DIV");
-        verticallyNoteTitle.classList.add("note-title");
-        verticallyNoteTitle.innerText = this._title;
-        this._verticallyNote.appendChild(verticallyNoteTitle);
-
-        this._verticallyNote.style.backgroundColor = this._color;
+    _initNormalNote() {
+        this._normalNote = createDIV(["note-card-normal"])
+        this._normalNote.appendChild(createDIV(["note-time"], this._prepareTimePeriod()));
+        this._normalNote.appendChild(createDIV(["note-title"], this._title));
     }
 
-    _initStaticNote() {
-        this._staticNote = document.createElement("DIV");
-        this._staticNote.classList.add("note-card-static");
+    _initMobileNote() {
+        this._mobileNote = createDIV(["note-card-mobile"]);
 
-        this._staticNoteTime = document.createElement("DIV");
-        this._staticNoteTime.classList.add("note-time");
-        this._staticNoteTime.innerText = this._prepareTimePeriod();
-        this._staticNote.appendChild(this._staticNoteTime);
+        this._mobileNoteTime = createDIV(["note-time"], this._prepareTimePeriod());
+        this._mobileNote.appendChild(this._mobileNoteTime);
 
-        this._staticNoteTitle = document.createElement("DIV");
-        this._staticNoteTitle.classList.add("note-title");
-        this._staticNoteTitle.innerText = this._title;
-        this._staticNote.appendChild(this._staticNoteTitle);
+        this._mobileNoteTitle = createDIV(["note-title"], this._title);
+        this._mobileNote.appendChild(this._mobileNoteTitle);
 
-        this._initStaticNotePopup()
+        this._initMobileNotePopup()
 
-        this._staticNote.style.backgroundColor = this._color;
-    }
-
-    _initStaticNotePopup() {
-        this._popupElements = document.createElement("DIV");
-
-        const staticNotePopupHeader = document.createElement("DIV");
-        staticNotePopupHeader.classList.add("note-card-static-opened-header")
-        staticNotePopupHeader.style.backgroundColor = this._color;
-
-        const staticNotePopupHeaderExitButton = document.createElement("DIV");
-        staticNotePopupHeaderExitButton.classList.add("note-card-static-opened-header-exit")
-        staticNotePopupHeaderExitButton.onclick = () => { this._closeStaticNote() }
-        staticNotePopupHeader.appendChild(staticNotePopupHeaderExitButton)
-
-        this._popupElements.appendChild(staticNotePopupHeader);
-
-        const staticNotePopupBody = document.createElement("DIV");
-        staticNotePopupBody.classList.add("note-card-static-opened-body")
-        this._popupElements.appendChild(staticNotePopupBody)
-        this._popupElements.style.display = "none"
-
-        this._staticNote.appendChild(this._popupElements)
-
-        // clickspot
-        this._staticNoteClickSpot = document.createElement("DIV");
-        this._staticNoteClickSpot.classList.add("note-card-static-clickspot")
-        this._staticNote.appendChild(this._staticNoteClickSpot);
-
-        this._staticNoteClickSpot.onclick = () => {
-            this._openStaticNote()
+        this._mobileNoteClickSpot = createDIV(["note-card-mobile-clickspot"]);
+        this._mobileNoteClickSpot.onclick = () => {
+            this._openMobileNote();
         }
-
-        this._staticNote.appendChild(this._staticNoteClickSpot)
-        //clickspot
+        this._mobileNote.appendChild(this._mobileNoteClickSpot);
     }
 
-    _openStaticNote() {
-        this._staticNote.classList.remove("note-card-static");
-        this._staticNote.classList.add("note-card-static-opened");
-        this._staticNote.style.backgroundColor = "white";
+    _initMobileNotePopup() {
+        this._mobilePopupElements = createDIV([], "");
+        hideElement(this._mobilePopupElements);
 
-        // hide title and time
-        this._staticNoteTime.style.display = "none"
-        this._staticNoteTitle.style.display = "none"
+        const header = createDIV(["note-card-mobile-opened-header"], "");
+        header.style.backgroundColor = this._color;
 
-        //show popup things
-        this._popupElements.style.display = "block"
+        const headerTitle = createDIV(["note-card-mobile-opened-header-title"], this._title)
+        header.appendChild(headerTitle);
 
-        this._staticNoteClickSpot.style.display = "none";
+        const headerExitButton = createDIV(["note-card-mobile-opened-header-exit"]);
+        headerExitButton.onclick = () => {
+            this._closeMobileNote();
+        }
+        header.appendChild(headerExitButton);
+
+        this._mobilePopupElements.appendChild(header);
+
+        const body = createDIV(["note-card-mobile-opened-body"], this._description);
+        this._mobilePopupElements.appendChild(body);
+
+        this._mobileNote.appendChild(this._mobilePopupElements);
     }
 
-    _closeStaticNote() {
-        this._staticNote.classList.remove("note-card-static-opened");
-        this._staticNote.classList.add("note-card-static");
-        this._staticNote.style.backgroundColor = this._color;
+    _openMobileNote() {
+        this._mobileNote.classList.remove("note-card-mobile");
+        this._mobileNote.classList.add("note-card-mobile-opened");
+        this._mobileNote.style.backgroundColor = "white";
 
-        this._staticNoteTime.style.display = "block"
-        this._staticNoteTitle.style.display = "block"
+        hideElement(this._mobileNoteTime);
+        hideElement(this._mobileNoteTitle);
+        hideElement(this._mobileNoteClickSpot);
 
-        this._popupElements.style.display = "none"
+        showElement(this._mobilePopupElements);
+    }
 
-        this._staticNoteClickSpot.style.display = "block"
+    _closeMobileNote() {
+        this._mobileNote.classList.remove("note-card-mobile-opened");
+        this._mobileNote.classList.add("note-card-mobile");
+        this._mobileNote.style.backgroundColor = this._color;
+
+        showElement(this._mobileNoteTime);
+        showElement(this._mobileNoteTitle);
+        showElement(this._mobileNoteClickSpot);
+
+        hideElement(this._mobilePopupElements);
     }
 
     _prepareTimePeriod() {
@@ -121,17 +102,22 @@ class Note {
         return `${timeFrom} - ${timeTo}`;
     }
 
+    _initColor() {
+        this._normalNote.style.backgroundColor = this._color;
+        this._mobileNote.style.backgroundColor = this._color;
+    }
+
     setVerticalPositionInPx(px) {
-        this._verticallyNote.style.top = `${px}px`;
+        this._normalNote.style.top = `${px}px`;
     }
 
     setHeight(px) {
-        this._verticallyNote.style.height = px;
+        this._normalNote.style.height = px;
     }
 
     addToElement(element) {
-        element.appendChild(this._verticallyNote);
-        element.appendChild(this._staticNote);
+        element.appendChild(this._normalNote);
+        element.appendChild(this._mobileNote);
     }
 
 }
@@ -322,4 +308,21 @@ function numberRange(from, to) {
 }
 
 
+// DOCUMENT UTILS
+function createDIV(classes = [], innerText = "") {
+    const htmlElement = document.createElement("DIV");
+    classes.forEach(eachClass => htmlElement.classList.add(eachClass));
+    htmlElement.innerText = innerText;
 
+    return htmlElement;
+}
+
+function hideElement(element) {
+    "use strict";
+    element.style.display = "none";
+}
+
+function showElement(element) {
+    "use strict";
+    element.style.display = "revert";
+}
