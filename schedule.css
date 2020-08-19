@@ -168,6 +168,34 @@
         left: 0;
         right: 0;
         bottom: 0;
+        animation: slideInFromRight;
+        animation-duration: 250ms;
+        z-index: 3;
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            left: 100%;
+        }
+
+        to {
+            left: 0;
+        }
+    }
+
+    .slide-out-to-right {
+        animation: slideOutToRight;
+        animation-duration: 250ms;
+    }
+
+    @keyframes slideOutToRight {
+        from {
+            left: 0;
+        }
+
+        to {
+            left: 100%;
+        }
     }
 
     .note-card-mobile-opened-header {

@@ -81,15 +81,21 @@ class Note {
     }
 
     _closeMobileNote() {
-        this._mobileNote.classList.remove("note-card-mobile-opened");
-        this._mobileNote.classList.add("note-card-mobile");
-        this._mobileNote.style.backgroundColor = this._color;
+        onEndCSSAnimationDo(this._mobileNote, "slideOutToRight", () => {
+            this._mobileNote.classList.remove("note-card-mobile-opened");
+            this._mobileNote.classList.add("note-card-mobile");
+            this._mobileNote.style.backgroundColor = this._color;
 
-        showElement(this._mobileNoteTime);
-        showElement(this._mobileNoteTitle);
-        showElement(this._mobileNoteClickSpot);
+            showElement(this._mobileNoteTime);
+            showElement(this._mobileNoteTitle);
+            showElement(this._mobileNoteClickSpot);
 
-        hideElement(this._mobilePopupElements);
+            hideElement(this._mobilePopupElements);
+
+            this._mobileNote.classList.remove("slide-out-to-right");
+        });
+
+        this._mobileNote.classList.add("slide-out-to-right");
     }
 
     _prepareTimePeriod() {
@@ -138,9 +144,9 @@ class Day {
         const dayHeaderContainer = createDIV(["day-header"])
         dayHeaderContainer.appendChild(createSPAN([], name));
 
-        this._initDayColumn();
-
         this._element.appendChild(dayHeaderContainer);
+
+        this._initDayColumn();
     }
 
     _initDayColumn() {
@@ -319,4 +325,14 @@ function hideElement(element) {
 function showElement(element) {
     "use strict";
     element.style.display = "revert";
+}
+
+// ANIMATION UTILS
+function onEndCSSAnimationDo(element, animationName, behaviour) {
+    "use strict";
+    element.addEventListener("animationend", (event) => {
+        if (event.animationName === animationName) {
+            behaviour();
+        }
+    })
 }
