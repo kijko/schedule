@@ -93,11 +93,11 @@ class Note {
     }
 
     _prepareTimePeriod() {
-        const timeFrom = formatTime(this.date.getHours(), this.date.getMinutes());
+        const timeFrom = printTime(this.date.getHours(), this.date.getMinutes());
 
         const dateTo = new Date(this.date.getTime());
         dateTo.setMinutes(this.date.getMinutes() + this.durationInMinutes);
-        const timeTo = formatTime(dateTo.getHours(), dateTo.getMinutes());
+        const timeTo = printTime(dateTo.getHours(), dateTo.getMinutes());
 
         return `${timeFrom} - ${timeTo}`;
     }
@@ -107,7 +107,7 @@ class Note {
         this._mobileNote.style.backgroundColor = this._color;
     }
 
-    setVerticalPositionInPx(px) {
+    setYPosition(px) {
         this._normalNote.style.top = `${px}px`;
     }
 
@@ -129,28 +129,28 @@ class Day {
         this.dayHourTo = dayHourTo;
         this._halfHourCellHeight = 30;
 
-        this._element = document.createElement("DIV");
-        this._element.classList.add("day");
+        this._initDay(name);
+    }
 
-        const dayHeaderContainer = document.createElement("DIV");
-        dayHeaderContainer.classList.add("day-header");
+    _initDay(name) {
+        this._element = createDIV(["day"]);
 
-        const dayHeader = document.createElement("SPAN");
-        dayHeader.innerText = name;
+        const dayHeaderContainer = createDIV(["day-header"])
+        dayHeaderContainer.appendChild(createSPAN([], name));
 
-        this._dayNotes = document.createElement("DIV");
-        this._dayNotes.classList.add("day-notes");
-
-        this.dayLengthInHours = dayHourTo - dayHourFrom + 1;
-        numberRange(1, this.dayLengthInHours * 2).forEach(_ => {
-            const halfHourElement = document.createElement("DIV");
-            halfHourElement.classList.add("day-notes-half-hour");
-            this._dayNotes.appendChild(halfHourElement);
-        });
-
-        dayHeaderContainer.appendChild(dayHeader);
+        this._initDayColumn();
 
         this._element.appendChild(dayHeaderContainer);
+    }
+
+    _initDayColumn() {
+        this._dayNotes = createDIV(["day-notes"]);
+
+        this.dayLengthInHours = this.dayHourTo - this.dayHourFrom + 1;
+
+        numberRange(1, this.dayLengthInHours * 2)
+            .forEach(_ => this._dayNotes.appendChild(createDIV(["day-notes-half-hour"])));
+
         this._element.appendChild(this._dayNotes);
     }
 
@@ -159,41 +159,40 @@ class Day {
     }
 
     addNote(note) {
-        const minuteOfDayFrom = this.dayHourFrom * 60;
-        const minuteOfDayNoteFrom = note.date.getHours() * 60 + note.date.getMinutes();
+        const startScheduleHourInMinutes = this.dayHourFrom * 60;
+        const startNoteHourInMinutes = note.date.getHours() * 60 + note.date.getMinutes();
 
-        if (minuteOfDayNoteFrom >= minuteOfDayFrom) {
+        if (startNoteHourInMinutes >= startScheduleHourInMinutes) {
             const oneMinuteHeightInPx = (this._halfHourCellHeight / 30).toFixed(2);
-            const verticalPosition = oneMinuteHeightInPx * (minuteOfDayNoteFrom - minuteOfDayFrom);
+            const yPosition = oneMinuteHeightInPx * (startNoteHourInMinutes - startScheduleHourInMinutes);
 
-            note.setVerticalPositionInPx(verticalPosition);
+            note.setYPosition(yPosition);
 
-
-            if (minuteOfDayNoteFrom + note.durationInMinutes <= this.dayHourTo * 60) {
+            const endNoteHourInMinutes = startNoteHourInMinutes + note.durationInMinutes;
+            const endScheduleHourInMinutes = this.dayHourTo * 60;
+            if (endNoteHourInMinutes <= endScheduleHourInMinutes) {
                 const noteHeightInPx = oneMinuteHeightInPx * note.durationInMinutes;
-                note.setHeight(noteHeightInPx);
 
+                note.setHeight(noteHeightInPx);
                 note.addToElement(this._dayNotes);
             } else {
                 console.error("Invalid note time to - note duration time is to long");
             }
 
-
         } else {
             console.error("Invalid note time from - note starts to early");
         }
-
 
     }
 }
 
 class Week {
-    constructor(firstDayDate, dayHourFrom, dayHourTo) {
-        this._container = document.querySelector(".days");
+    constructor(container, firstDayDate, dayHourFrom, dayHourTo) {
+        this._container = container;
 
-        const daysData = next7Days(firstDayDate);
+        const dates = generate7DaysDatesAhead(firstDayDate);
 
-        this._days = daysData.map(dayData => new Day(dayData.date, dayData.name, dayHourFrom, dayHourTo));
+        this._days = dates.map(dayData => new Day(dayData.date, dayData.name, dayHourFrom, dayHourTo));
         this._days.forEach(day => this._container.appendChild(day.getElement()));
     }
 
@@ -218,39 +217,26 @@ class Schedule {
     }
 
     _initializeBasicContainers(container) {
-        const scheduleElement = document.createElement("DIV");
-        scheduleElement.classList.add("schedule");
+        this._scheduleElement = createDIV(["schedule"]);
 
-        const timeColumnElement = document.createElement("DIV");
-        timeColumnElement.classList.add("time-column");
-        const emptyTimeRowElement = document.createElement("DIV");
-        emptyTimeRowElement.classList.add("empty-time-row");
-        timeColumnElement.appendChild(emptyTimeRowElement);
-        scheduleElement.appendChild(timeColumnElement);
+        this._timeColumnElement = createDIV(["time-column"]);
+        this._timeColumnElement.appendChild(createDIV(["empty-time-row"]));
+        this._scheduleElement.appendChild(this._timeColumnElement);
 
-        const daysElement = document.createElement("DIV");
-        daysElement.classList.add("days");
-        scheduleElement.appendChild(daysElement);
+        this._daysContainer = createDIV(["days"]);
+        this._scheduleElement.appendChild(this._daysContainer);
 
-        container.appendChild(scheduleElement);
+        container.appendChild(this._scheduleElement);
+    }
+
+    _initializeTimeColumn(hourFrom, hourTo) {
+        for (let hour of numberRange(hourFrom, hourTo)) {
+            this._timeColumnElement.appendChild(createDIV(["time-row"], `${hour}:00`));
+        }
     }
 
     _initializeDays(scheduleDate, hourFrom, hourTo) {
-        this._week = new Week(scheduleDate, hourFrom, hourTo);
-    }
-
-
-    _initializeTimeColumn(hourFrom, hourTo) {
-        let timeColumn = document.querySelector(".time-column");
-
-        for (let hour of numberRange(hourFrom, hourTo)) {
-            const timeRow = document.createElement("DIV");
-            timeRow.innerText = `${hour}:00`;
-            timeRow.classList.add("time-row");
-            timeColumn.appendChild(timeRow);
-        }
-
-
+        this._week = new Week(this._daysContainer, scheduleDate, hourFrom, hourTo);
     }
 
     addNote(note) {
@@ -264,7 +250,7 @@ function getDayNameFromDate(date) {
     return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
 }
 
-function next7Days(firstDayDate) {
+function generate7DaysDatesAhead(firstDayDate) {
     return numberRange(0, 6)
         .map(it => {
             if (it === 0) {
@@ -287,7 +273,7 @@ function dateEqualsIgnoreTime(date1, date2) {
         date1.getDay() === date2.getDay();
 }
 
-function formatTime(hours, minutes) { // HH:mm
+function printTime(hours, minutes) { // HH:mm
     "use strict";
 
     return `${hours <= 9 ? `0${hours}` : hours}:${minutes <= 9 ? `0${minutes}` : minutes}`;
@@ -311,6 +297,14 @@ function numberRange(from, to) {
 // DOCUMENT UTILS
 function createDIV(classes = [], innerText = "") {
     const htmlElement = document.createElement("DIV");
+    classes.forEach(eachClass => htmlElement.classList.add(eachClass));
+    htmlElement.innerText = innerText;
+
+    return htmlElement;
+}
+
+function createSPAN(classes = [], innerText = "") {
+    const htmlElement = document.createElement("SPAN");
     classes.forEach(eachClass => htmlElement.classList.add(eachClass));
     htmlElement.innerText = innerText;
 
