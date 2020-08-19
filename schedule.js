@@ -24,6 +24,84 @@ class Note {
         this._normalNote = createDIV(["note-card-normal"])
         this._normalNote.appendChild(createDIV(["note-time"], this._prepareTimePeriod()));
         this._normalNote.appendChild(createDIV(["note-title"], this._title));
+
+        this._normalNotePopupBody = createDIV(["note-card-normal-opened-body"], this._description);
+        hideElement(this._normalNotePopupBody);
+
+        this._normalNote.onclick = () => {
+            this._openNormalNote()
+        }
+
+        this._normalNoteOpened = false;
+    }
+
+    _openNormalNote() {
+        if (this._normalNoteOpened) {
+            return;
+        } else {
+            this._normalNoteOpened = true;
+        }
+
+        this._normalNote.classList.remove("note-card-normal");
+        this._normalNote.classList.add("note-card-normal-opened");
+
+        this._normalNote.style.position = "fixed";
+        // let topValue = parseInt(this._normalNote.style.top.replace("px", "")) + 40;
+        // this._normalNote.style.top = `${topValue}px`;
+        this._normalNote.style.width = `${(window.outerWidth / 7).toFixed(2)}px`
+
+        let start = Date.now();
+        const animationDuration = 150;
+        const startWidth = (window.outerWidth / 7).toFixed(2);
+        const goalWidth = (window.outerWidth / 5).toFixed(2);
+        const widthToAdd = goalWidth - startWidth;
+        let cycleTime = 5;
+        const pixelsForOneCycle = (widthToAdd / animationDuration) * cycleTime;
+        let actualWidth = parseInt(this._normalNote.style.width.replace("px", ""));
+
+        let actualHeight = this._normalNote.offsetHeight;
+        let goalHeight = (window.outerHeight / 5) * 4;
+        let diffHeight = goalHeight - actualHeight;
+        const pixelsForOneCycleHeight = (diffHeight / animationDuration) * cycleTime;
+
+        let actualTop = parseInt(this._normalNote.style.top.replace("px", ""));
+        let goalTop = window.outerHeight / 10;
+        let diffTop = goalTop - actualTop;
+        const pixelsForOneCycleTop = (diffTop / animationDuration) * cycleTime;
+
+        let actualLeft = 0;
+        let goalLeft = window.outerWidth / 10;
+        const pixelsForOneCycleLeft = (goalLeft / animationDuration) * cycleTime;
+        let timer = setInterval(() => {
+            let timePassed = Date.now() - start;
+            if (timePassed >= animationDuration) {
+                clearInterval(timer);
+
+                this._normalNotePopupBody.style.top = this._normalNote.style.top;
+                this._normalNotePopupBody.style.right = "10%";
+                this._normalNotePopupBody.style.left = `${parseInt(this._normalNote.style.left.replace("px", "")) + this._normalNote.offsetWidth}px`;
+                this._normalNotePopupBody.style.height = `${this._normalNote.offsetHeight}px`;
+
+                showElement(this._normalNotePopupBody);
+                return;
+            }
+
+            actualWidth += pixelsForOneCycle;
+            this._normalNote.style.width = `${actualWidth}px`;
+
+            actualHeight += pixelsForOneCycleHeight;
+            this._normalNote.style.height = `${actualHeight}px`;
+
+            actualTop += pixelsForOneCycleTop;
+            this._normalNote.style.top = `${actualTop}px`;
+
+            actualLeft += pixelsForOneCycleLeft;
+            this._normalNote.style.left = `${actualLeft}px`;
+        }, cycleTime)
+        // this._normalNote.classList.remove("note-card-normal");
+        // this._normalNote.classList.add("note-card-normal-opened");
+
+        // showElement(this._normalNotePopupBody);
     }
 
     _initMobileNote() {
@@ -123,6 +201,7 @@ class Note {
 
     addToElement(element) {
         element.appendChild(this._normalNote);
+        element.appendChild(this._normalNotePopupBody);
         element.appendChild(this._mobileNote);
     }
 
