@@ -26,82 +26,179 @@ class Note {
         this._normalNote.appendChild(createDIV(["note-title"], this._title));
 
         this._normalNotePopupBody = createDIV(["note-card-normal-opened-body"], this._description);
+        const popupExit = createDIV(["note-card-normal-opened-exit"]);
+        popupExit.onclick = () => {
+            this._closeNormalNote();
+        }
+
+        this._normalNotePopupBody.appendChild(popupExit)
         hideElement(this._normalNotePopupBody);
 
         this._normalNote.onclick = () => {
             this._openNormalNote()
         }
 
-        this._normalNoteOpened = false;
+        this._normalNoteState = {
+            opened: false,
+            closedFixedDimensions: {
+                top: undefined,
+                left: undefined,
+                right: undefined,
+                bottom: undefined,
+                width: undefined,
+                height: undefined
+            },
+            closedDimensions: {
+                top: undefined,
+                height: undefined
+            }
+        }
     }
 
     _openNormalNote() {
-        if (this._normalNoteOpened) {
+        if (this._normalNoteState.opened) {
             return;
         } else {
-            this._normalNoteOpened = true;
+            this._normalNoteState.opened = true;
         }
 
-        this._normalNote.classList.remove("note-card-normal");
-        this._normalNote.classList.add("note-card-normal-opened");
+        const startTopInPx = this._normalNote.getBoundingClientRect().top;
+        const topAnimationDuration = 150;
 
-        this._normalNote.style.position = "fixed";
-        // let topValue = parseInt(this._normalNote.style.top.replace("px", "")) + 40;
-        // this._normalNote.style.top = `${topValue}px`;
-        this._normalNote.style.width = `${(window.outerWidth / 7).toFixed(2)}px`
+        const startLeftInPx = this._normalNote.getBoundingClientRect().left;
+        const leftAnimationDuration = 100;
 
-        let start = Date.now();
-        const animationDuration = 150;
-        const startWidth = (window.outerWidth / 7).toFixed(2);
-        const goalWidth = (window.outerWidth / 5).toFixed(2);
-        const widthToAdd = goalWidth - startWidth;
-        let cycleTime = 5;
-        const pixelsForOneCycle = (widthToAdd / animationDuration) * cycleTime;
-        let actualWidth = parseInt(this._normalNote.style.width.replace("px", ""));
+        const startWidthInPx = this._normalNote.offsetWidth;
+        const widthAnimationDuration = 150;
 
-        let actualHeight = this._normalNote.offsetHeight;
-        let goalHeight = (window.outerHeight / 5) * 4;
-        let diffHeight = goalHeight - actualHeight;
-        const pixelsForOneCycleHeight = (diffHeight / animationDuration) * cycleTime;
+        const startHeightInPx = this._normalNote.offsetHeight;
+        const heightAnimationDuration = 250;
 
-        let actualTop = parseInt(this._normalNote.style.top.replace("px", ""));
-        let goalTop = window.outerHeight / 10;
-        let diffTop = goalTop - actualTop;
-        const pixelsForOneCycleTop = (diffTop / animationDuration) * cycleTime;
+        this._normalNoteState.closedFixedDimensions.top = startTopInPx;
+        this._normalNoteState.closedFixedDimensions.left = startLeftInPx;
+        this._normalNoteState.closedFixedDimensions.height = startHeightInPx;
+        this._normalNoteState.closedFixedDimensions.width = startWidthInPx;
 
-        let actualLeft = 0;
-        let goalLeft = window.outerWidth / 10;
-        const pixelsForOneCycleLeft = (goalLeft / animationDuration) * cycleTime;
-        let timer = setInterval(() => {
-            let timePassed = Date.now() - start;
-            if (timePassed >= animationDuration) {
-                clearInterval(timer);
-
-                this._normalNotePopupBody.style.top = this._normalNote.style.top;
-                this._normalNotePopupBody.style.right = "10%";
-                this._normalNotePopupBody.style.left = `${parseInt(this._normalNote.style.left.replace("px", "")) + this._normalNote.offsetWidth}px`;
-                this._normalNotePopupBody.style.height = `${this._normalNote.offsetHeight}px`;
-
-                showElement(this._normalNotePopupBody);
-                return;
+        const endTopInPx = window.outerHeight / 10;
+        animate(
+            this._normalNote,
+            {
+                duration: topAnimationDuration,
+                cycleTime: 5,
+                before: () => {
+                    this._normalNote.style.position = "fixed";
+                    this._normalNote.style.top = numberToPx(startTopInPx);
+                    this._normalNote.style.left = numberToPx(startLeftInPx);
+                    this._normalNote.style.width = numberToPx(startWidthInPx);
+                    this._normalNote.style.cursor = "initial";
+                    this._normalNote.style.height = "";
+                    this._normalNote.style.zIndex = "3";
+                    this._normalNote.style.borderBottom = "0";
+                }
+            },
+            {
+                styleName: "top",
+                from: startTopInPx,
+                to: endTopInPx
             }
+        )
 
-            actualWidth += pixelsForOneCycle;
-            this._normalNote.style.width = `${actualWidth}px`;
+        const endLeftInPx = window.outerWidth / 10;
+        animate(
+            this._normalNote,
+            {
+                duration: leftAnimationDuration,
+                cycleTime: 5
+            },
+            {
+                styleName: "left",
+                from: startLeftInPx,
+                to: endLeftInPx
+            }
+        )
 
-            actualHeight += pixelsForOneCycleHeight;
-            this._normalNote.style.height = `${actualHeight}px`;
+        const endHeightInPx = (window.outerHeight / 10) * 7;
+        animate(
+            this._normalNote,
+            {
+                duration: heightAnimationDuration,
+                cycleTime: 5,
+                after: () => {
+                    this._normalNotePopupBody.style.top = numberToPx(endTopInPx);
+                    this._normalNotePopupBody.style.right = numberToPx(endLeftInPx);
+                    this._normalNotePopupBody.style.left = numberToPx(endLeftInPx + endWidthInPx);
+                    this._normalNotePopupBody.style.height = numberToPx(endHeightInPx);
 
-            actualTop += pixelsForOneCycleTop;
-            this._normalNote.style.top = `${actualTop}px`;
+                    showElement(this._normalNotePopupBody);
+                }
+            },
+            {
+                styleName: "height",
+                from: startHeightInPx,
+                to: endHeightInPx
+            }
+        );
 
-            actualLeft += pixelsForOneCycleLeft;
-            this._normalNote.style.left = `${actualLeft}px`;
-        }, cycleTime)
-        // this._normalNote.classList.remove("note-card-normal");
-        // this._normalNote.classList.add("note-card-normal-opened");
+        const endWidthInPx = window.outerWidth / 5;
+        animate(
+            this._normalNote,
+            {
+                duration: widthAnimationDuration,
+                cycleTime: 5,
+            },
+            {
+                styleName: "width",
+                from: startWidthInPx,
+                to: endWidthInPx
+            }
+        )
 
-        // showElement(this._normalNotePopupBody);
+    }
+
+    _closeNormalNote() {
+        if (this._normalNoteState.opened) {
+            hideElement(this._normalNotePopupBody);
+
+            const startTop = this._normalNote.getBoundingClientRect().top;
+            const endTop = this._normalNoteState.closedFixedDimensions.top;
+            animate(this._normalNote, {duration: 100, cycleTime: 5}, {styleName: "top", from: startTop, to: endTop});
+
+            const startLeft = this._normalNote.getBoundingClientRect().left;
+            const endLeft = this._normalNoteState.closedFixedDimensions.left;
+            animate(this._normalNote, {duration: 150, cycleTime: 5}, {
+                styleName: "left",
+                from: startLeft,
+                to: endLeft
+            });
+
+            const startHeight = this._normalNote.getBoundingClientRect().height;
+            const endHeight = this._normalNoteState.closedFixedDimensions.height;
+            animate(this._normalNote, {duration: 200, cycleTime: 5}, {
+                styleName: "height",
+                from: startHeight,
+                to: endHeight
+            });
+
+            const startWidth = this._normalNote.getBoundingClientRect().width;
+            const endWidth = this._normalNoteState.closedFixedDimensions.width;
+            animate(this._normalNote, {
+                duration: 300, cycleTime: 5, after: () => {
+                    this._normalNote.style.position = "";
+                    this._normalNote.style.zIndex = "";
+                    this._normalNote.style.borderBottom = "";
+                    this._normalNote.style.width = "";
+                    this._normalNote.style.left = "";
+                    this._normalNote.style.bottom = "";
+                    this._normalNote.style.cursor = "";
+
+                    this._normalNote.style.height = numberToPx(this._normalNoteState.closedDimensions.height);
+                    this._normalNote.style.top = numberToPx(this._normalNoteState.closedDimensions.top);
+
+                    this._normalNoteState.opened = false;
+                }
+            }, {styleName: "width", from: startWidth, to: endWidth});
+
+        }
     }
 
     _initMobileNote() {
@@ -192,11 +289,13 @@ class Note {
     }
 
     setYPosition(px) {
+        this._normalNoteState.closedDimensions.top = px;
         this._normalNote.style.top = `${px}px`;
     }
 
     setHeight(px) {
-        this._normalNote.style.height = px;
+        this._normalNoteState.closedDimensions.height = px;
+        this._normalNote.style.height = `${px}px`;
     }
 
     addToElement(element) {
@@ -378,6 +477,13 @@ function numberRange(from, to) {
     return resultRange;
 }
 
+function numberToPx(num) {
+    return `${num}px`;
+}
+
+function pxToInt(px) {
+    return parseInt(px.replace("px", ""));
+}
 
 // DOCUMENT UTILS
 function createDIV(classes = [], innerText = "") {
@@ -415,3 +521,45 @@ function onEndCSSAnimationDo(element, animationName, behaviour) {
         }
     })
 }
+
+function animate(element, properties, details) {
+    if (properties.before) {
+        properties.before();
+    }
+
+    const applyFunc = (value) => {
+        if (details.styleName) {
+            element.style[details.styleName] = numberToPx(value);
+        } else {
+            details.customFun(element, value);
+        }
+    };
+
+    applyFunc(details.from);
+
+    let start = Date.now();
+
+    const diff = details.to - details.from;
+    const diffPerOneFrame = diff / properties.duration;
+    const diffPerOneCycle = diffPerOneFrame * properties.cycleTime;
+
+    let nextValue = details.from;
+    let timer = setInterval(() => {
+        const timePassed = Date.now() - start;
+
+        if (timePassed < properties.duration) {
+            nextValue = nextValue + diffPerOneCycle;
+            applyFunc(nextValue);
+        } else {
+            applyFunc(details.to);
+
+            if (properties.after) {
+                properties.after();
+            }
+
+            clearInterval(timer);
+        }
+
+    }, properties.cycleTime)
+}
+

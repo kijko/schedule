@@ -107,8 +107,10 @@
     }
 
     .note-card-normal {
+        color: white;
         position: absolute;
         width: 100%;
+        cursor: pointer;
     }
 
     .note-time {
@@ -141,6 +143,16 @@
 
         z-index: 3;
     }
+
+    .note-card-normal-opened-exit::before {
+        content: '✖';
+
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 24px;
+        cursor: pointer;
+    }
 }
 
 @media (max-width: 1023px) {
@@ -157,7 +169,7 @@
     }
 
     .note-card-normal, .note-card-normal-opened, .note-card-normal-opened-body {
-        display: none;
+        display: none!important;
     }
 
     .note-card-mobile {
