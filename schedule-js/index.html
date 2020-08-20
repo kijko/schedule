@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="schedule.css">
+    <script type="text/javascript" src="schedule.js"></script>
+</head>
+<body>
+
+<div id="here"></div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        const schedule = new Schedule(
+            document.getElementById("here"),
+            new Date(),
+            8,
+            19,
+            []
+        );
+
+        schedule.addNote(new Note(new Date(), 60, "Tytuł2 zadania", "lorem2 Ipsum", "#568093"));
+    }
+</script>
+
+</body>
+</html>
