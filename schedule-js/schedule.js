@@ -1,6 +1,6 @@
 /* global console */
 
-class Note {
+export class Note {
     constructor(
         date,
         durationInMinutes,
@@ -390,7 +390,7 @@ class Week {
     }
 }
 
-class Schedule {
+export class Schedule {
 
     constructor(containerElement, scheduleDate, hourFrom, hourTo, notes) {
         this._initializeBasicContainers(containerElement);
@@ -479,10 +479,6 @@ function numberRange(from, to) {
 
 function numberToPx(num) {
     return `${num}px`;
-}
-
-function pxToInt(px) {
-    return parseInt(px.replace("px", ""));
 }
 
 // DOCUMENT UTILS

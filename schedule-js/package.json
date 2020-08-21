@@ -1,0 +1,14 @@
+{
+  "name": "schedule-js",
+  "version": "0.0.2",
+  "description": "Pure JS simple schedule component",
+  "main": "schedule.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "schedule"
+  ],
+  "author": "mkijko",
+  "license": "ISC"
+}
