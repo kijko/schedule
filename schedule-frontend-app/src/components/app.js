@@ -1,23 +1,16 @@
-import {BrowserRouter, Switch, Route} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import React from "react";
 import {UserSelect} from "./user-select/user-select";
 import {Schedule} from "./schedule/schedule";
+import {AuthContext, initialAuthorization, AuthorizedRoute, AnonymousRoute} from "../core/authentication/auth";
 import {UserBar} from "./user-bar/user-bar";
 
 export const App = () => (
-  <BrowserRouter>
-      <Switch>
-          <Route exact path="/">
-              <UserSelect />
-          </Route>
-          <Route path="/schedule">
-              <div>
-                  <UserBar />
-              </div>
-              <div>
-                  <Schedule />
-              </div>
-          </Route>
-      </Switch>
-  </BrowserRouter>
+    <AuthContext.Provider value={initialAuthorization}>
+        <UserBar/>
+        <BrowserRouter>
+            <AnonymousRoute exact path="/" component={UserSelect} otherwiseRedirect="/schedule"/>
+            <AuthorizedRoute path="/schedule" component={Schedule} otherwiseRedirect="/" />
+        </BrowserRouter>
+    </AuthContext.Provider>
 );

@@ -1,4 +1,5 @@
 import React from "react";
+import {AuthContext} from "../../core/authentication/auth";
 
 export class UserBar extends React.Component {
 
@@ -7,3 +8,4 @@ export class UserBar extends React.Component {
     }
 
 }
+UserBar.contextType = AuthContext
