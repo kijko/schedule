@@ -2,7 +2,7 @@ import React, {createContext} from "react";
 import {Route, Redirect} from "react-router-dom";
 
 export const initialAuthorization = {
-    loggedUserName: "kijko",
+    loggedUserName: null,
     isAuthorized: function () {
         return !!this.loggedUserName
     }

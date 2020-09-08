@@ -1,0 +1,21 @@
+.user-bar {
+    position: relative;
+    background-color: slategray;
+    height: 4rem;
+    text-align: right;
+    color: white;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.logged-user-header {
+    position: absolute;
+    right: 10px;
+    bottom: 50%;
+}
+
+.log-out {
+    text-transform: initial;
+    color: lightblue;
+}
+
