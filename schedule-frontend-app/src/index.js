@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Schedule} from "./components/schedule";
-
+import {App} from "./components/app";
 
 ReactDOM.render(
-    <Schedule/>,
+    <App/>,
     document.getElementById("root")
 )

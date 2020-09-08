@@ -2,8 +2,8 @@ import React from "react";
 
 import "./schedule.css";
 
-import {Schedule as ScheduleJS} from "../../node_modules/schedule-js/schedule.js";
-import "../../node_modules/schedule-js/schedule.css";
+import {Schedule as ScheduleJS} from "schedule-js";
+import "schedule-js/schedule.css";
 import moment from "moment";
 
 export class Schedule extends React.Component {
