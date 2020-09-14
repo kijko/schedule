@@ -1,16 +1,26 @@
 import React from "react";
-import {AuthContext} from "../../core/authentication/auth";
 import "./user-bar.css"
+import {AuthContext} from "../app";
 
 export class UserBar extends React.Component {
 
     render() {
-        const isAuthorized = this.context.isAuthorized();
-
-        return isAuthorized ?
-            ( <div className="user-bar"> <p className="logged-user-header">logged as: {this.context.loggedUserName} <a className="log-out">Log out</a> </p> </div> )
-            : ( <div className="user-bar"> <p className="logged-user-header">anonymous user</p> </div> )
+        return <div className="user-bar">
+            <div className="logged-user-header">
+                <AuthContext.Consumer>
+                    {authorization =>
+                        !!authorization ?
+                            (
+                                <div>
+                                    {`logged as: ${authorization.username}`}
+                                    <a className="log-out" onClick={() => this.props.handleLogOut()}>
+                                        Log out
+                                    </a>
+                                </div>
+                            ) : "anonymous user"
+                    }
+                </AuthContext.Consumer>
+            </div>
+        </div>
     }
-
 }
-UserBar.contextType = AuthContext

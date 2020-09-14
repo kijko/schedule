@@ -1,0 +1,41 @@
+.user-select-container {
+    width: 450px;
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.user-select-header {
+    border: 1px solid darkgray;
+    text-align: center;
+    font-size: 26px;
+    padding: 15px;
+}
+
+.user-select-list-container {
+    height: 400px;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.user-select-list-container::-webkit-scrollbar {
+    display: none;
+}
+
+.user-select-list {
+    list-style: none;
+    border: 1px solid darkgray;
+    overflow-y: hidden;
+}
+
+.user-select-list-element {
+    cursor: pointer;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.user-select-list-element:hover {
+    background-color: aliceblue;
+}
