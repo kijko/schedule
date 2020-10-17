@@ -11,9 +11,9 @@ export class Note {
         this.date = date;
         this.durationInMinutes = durationInMinutes;
 
-        this._title = title;
-        this._description = description;
-        this._color = color;
+        this.title = title;
+        this.description = description;
+        this.color = color;
 
         this._initNormalNote();
         this._initMobileNote();
@@ -23,9 +23,9 @@ export class Note {
     _initNormalNote() {
         this._normalNote = createDIV(["note-card-normal"])
         this._normalNote.appendChild(createDIV(["note-time"], this._prepareTimePeriod()));
-        this._normalNote.appendChild(createDIV(["note-title"], this._title));
+        this._normalNote.appendChild(createDIV(["note-title"], this.title));
 
-        this._normalNotePopupBody = createDIV(["note-card-normal-opened-body"], this._description);
+        this._normalNotePopupBody = createDIV(["note-card-normal-opened-body"], this.description);
         const popupExit = createDIV(["note-card-normal-opened-exit"]);
         popupExit.onclick = () => {
             this._closeNormalNote();
@@ -207,7 +207,7 @@ export class Note {
         this._mobileNoteTime = createDIV(["note-time"], this._prepareTimePeriod());
         this._mobileNote.appendChild(this._mobileNoteTime);
 
-        this._mobileNoteTitle = createDIV(["note-title"], this._title);
+        this._mobileNoteTitle = createDIV(["note-title"], this.title);
         this._mobileNote.appendChild(this._mobileNoteTitle);
 
         this._initMobileNotePopup()
@@ -224,9 +224,9 @@ export class Note {
         hideElement(this._mobilePopupElements);
 
         const header = createDIV(["note-card-mobile-opened-header"], "");
-        header.style.backgroundColor = this._color;
+        header.style.backgroundColor = this.color;
 
-        const headerTitle = createDIV(["note-card-mobile-opened-header-title"], this._title)
+        const headerTitle = createDIV(["note-card-mobile-opened-header-title"], this.title)
         header.appendChild(headerTitle);
 
         const headerExitButton = createDIV(["note-card-mobile-opened-header-exit"]);
@@ -237,7 +237,7 @@ export class Note {
 
         this._mobilePopupElements.appendChild(header);
 
-        const body = createDIV(["note-card-mobile-opened-body"], this._description);
+        const body = createDIV(["note-card-mobile-opened-body"], this.description);
         this._mobilePopupElements.appendChild(body);
 
         this._mobileNote.appendChild(this._mobilePopupElements);
@@ -259,7 +259,7 @@ export class Note {
         onEndCSSAnimationDo(this._mobileNote, "slideOutToRight", () => {
             this._mobileNote.classList.remove("note-card-mobile-opened");
             this._mobileNote.classList.add("note-card-mobile");
-            this._mobileNote.style.backgroundColor = this._color;
+            this._mobileNote.style.backgroundColor = this.color;
 
             showElement(this._mobileNoteTime);
             showElement(this._mobileNoteTitle);
@@ -284,8 +284,8 @@ export class Note {
     }
 
     _initColor() {
-        this._normalNote.style.backgroundColor = this._color;
-        this._mobileNote.style.backgroundColor = this._color;
+        this._normalNote.style.backgroundColor = this.color;
+        this._mobileNote.style.backgroundColor = this.color;
     }
 
     setYPosition(px) {
